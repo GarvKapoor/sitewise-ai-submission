@@ -3,14 +3,14 @@
 **SiteWise AI** is an automated, AI-assisted Earth observation platform designed for satellite image land-cover analysis, physical terrain indexing, and multi-criteria site suitability screening. The system translates raw Sentinel-2 satellite tiles into 10 EuroSAT land categories, computes 8 optical terrain telemetry features, and predicts optimal zoning and development uses across 8 distinct sectors.
 
 This project is submitted by:
-- **Garv**
-- **Inayath**
-- **Aneesh**
+- Chinta Aneesh Murthy 24BCA7708
+- Shaik Inayatulla Ahemed 24BCA7850
+- Komari Thanvika 24BCA8067
+- Garv Kapoor 24BCE7118
 
-**Registration Numbers:** `24BCA8067`, `24BCA7850`, `24BCA7708`, `24BCE7118`  
-*School of Computer Science and Engineering, Vellore Institute of Technology (VIT-AP University)*
 
-> **Project Report:** The complete academic and technical documentation for this project is detailed in [`Ai_project_report.docx`](./Ai_project_report.docx).
+
+> **Project Report:** The complete academic and technical documentation for this project is detailed in [`Ai_project_report.docx`](./04_FINAL_PROJECT_REPORT/SiteWise_AI_Complete_Project_Report (1).docx.)
 
 ---
 
@@ -95,21 +95,20 @@ sitewise-ai-submission/
 
 # Contributors
 
-- **Garv**
-- **Inayath**
-- **Aneesh**
-
-**Registration Numbers:** `24BCA8067`, `24BCA7850`, `24BCA7708`, `24BCE7118`  
-*School of Computer Science and Engineering, Vellore Institute of Technology, Amaravathi*
-
+- **Chinta Aneesh Murthy** 24BCA7708
+- **Shaik Inayatulla Ahemed** 24BCA7850
+- **Komari Thanvika** 24BCA8067
+- **Garv Kapoor** 24BCE7118
 ---
 
 # Steps to run locally
 
 ```bash
 # 1. Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+git clone https://github.com/GarvKapoor/sitewise-ai-submission.git
+cd /Users/garvkapoor/dl-proj/03_APPLICATION
+python -m venv venv
+source venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
