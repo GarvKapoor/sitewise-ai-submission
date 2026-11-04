@@ -8,9 +8,11 @@ This project is submitted by:
 - Komari Thanvika 24BCA8067
 - Garv Kapoor 24BCE7118
 
+# Quick Links
+ - Live Demo : https://sitewise-ai-submission.onrender.com
+ - Youtube video Demonstrating the app : 
 
-
-> **Project Report:** The complete academic and technical documentation for this project is detailed in [`Ai_project_report.docx`](./04_FINAL_PROJECT_REPORT/SiteWise_AI_Complete_Project_Report (1).docx.)
+> **Project Report:** The complete academic and technical documentation for this project is detailed in [`Ai_project_report.docx`](./04_FINAL_PROJECT_REPORT/SiteWise_AI_Complete_Project_Report%20(1).docx)
 
 ---
 
@@ -79,7 +81,7 @@ SiteWise AI utilizes a multi-stage hierarchical inference pipeline:
 sitewise-ai-submission/
 ├── 01_REVIEW_PRESENTATIONS/       # Review presentations and PDF slide decks
 ├── 02_MODEL_IMPLEMENTATIONS/       # Standalone model pipelines, source code, and benchmarks
-│   ├── 01_EfficientNetB0/         # EuroSAT classification pipeline (Inayath)
+│   ├── 01_EfficientNetB0/         # EuroSAT classification pipeline (Inayath & Thanvika)
 │   ├── 02_PAPNet/                 # Pattern-Affinitive Propagation Network (Garv)
 │   └── 03_UNet/                   # DeepGlobe terrain semantic segmentation (Aneesh)
 ├── 03_APPLICATION/                # Production full-stack deployment
@@ -95,10 +97,10 @@ sitewise-ai-submission/
 
 # Contributors
 
-- **Chinta Aneesh Murthy** 24BCA7708
-- **Shaik Inayatulla Ahemed** 24BCA7850
-- **Komari Thanvika** 24BCA8067
-- **Garv Kapoor** 24BCE7118
+- **Chinta Aneesh Murthy** 24BCA7708 contributed to Implementing the model in [UNET](./02_MODEL_IMPLEMENTATIONS/03_UNet/)
+- **Shaik Inayatulla Ahemed** 24BCA7850 contributed to main UI of the Website and implementing the model in [EfficientNetB0](./02_MODEL_IMPLEMENTATIONS/01_EfficientNetB0/)
+- **Komari Thanvika** 24BCA8067 contributed to implementing the model in [EfficientNetB0](./02_MODEL_IMPLEMENTATIONS/01_EfficientNetB0/)
+- **Garv Kapoor** 24BCE7118 contributed to implementing the model in [PAPNet](./02_MODEL_IMPLEMENTATIONS/02_PAPNet/)
 ---
 
 # Steps to run locally
