@@ -33,6 +33,22 @@
         </div>
     </div>
 
+    <!-- MODEL 1 ARCHITECTURE SELECTOR -->
+    <div class="nav-model-selector" id="navModelSelector">
+        <button type="button" class="nav-model-btn active" data-model="efficientnet" id="btn-efficientnet">
+            <span class="btn-dot"></span>
+            <span>EfficientNet</span>
+        </button>
+        <button type="button" class="nav-model-btn" data-model="unet" id="btn-unet">
+            <span class="btn-dot"></span>
+            <span>UNet</span>
+        </button>
+        <button type="button" class="nav-model-btn" data-model="papnet" id="btn-papnet">
+            <span class="btn-dot"></span>
+            <span>PAPNet</span>
+        </button>
+    </div>
+
     <div class="status">
         <span class="status-dot"></span>
         AI SYSTEM ONLINE
@@ -215,8 +231,8 @@
 
             <div class="result-card land-card">
 
-                <div class="card-label">
-                    MODEL 1 / LAND CLASSIFICATION
+                <div class="card-label" id="model1CardLabel">
+                    MODEL 1 / LAND CLASSIFICATION (EFFICIENTNET)
                 </div>
 
                 <div class="land-content">
@@ -265,6 +281,16 @@
 
                     </div>
 
+                </div>
+
+                <!-- UNET SEGMENTATION OVERLAY (SHOWN FOR UNET) -->
+                <div id="unetSegSection" class="unet-seg-section hidden">
+                    <div class="small-label" style="margin-top: 14px; margin-bottom: 6px;">
+                        PIXEL-WISE TERRAIN MASK OVERLAY
+                    </div>
+                    <div class="unet-preview-wrap">
+                        <img id="unetMaskImg" class="unet-mask-img" alt="U-Net Mask" />
+                    </div>
                 </div>
 
             </div>
@@ -351,8 +377,8 @@
                 <div class="card-header">
 
                     <div>
-                        <div class="card-label">
-                            MODEL 1
+                        <div class="card-label" id="model1DistLabel">
+                            MODEL 1 — EFFICIENTNET
                         </div>
 
                         <h3>LAND CLASS DISTRIBUTION</h3>
@@ -440,9 +466,9 @@
 
                 <div class="step-icon">AI</div>
 
-                <h3>LAND CLASSIFICATION</h3>
+                <h3 id="step2Title">LAND CLASSIFICATION</h3>
 
-                <p>
+                <p id="step2Desc">
                     EfficientNetB0 analyzes the image and
                     predicts the land category with a confidence
                     score across ten classes.
@@ -525,7 +551,7 @@
                     analysis.
                 </p>
 
-                <p>
+                <p id="explanationModel1">
                     The first model performs land classification
                     using an EfficientNetB0 architecture. Its
                     output contains both the predicted land type

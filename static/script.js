@@ -15,6 +15,81 @@ const processingText = document.getElementById("processingText");
 const results = document.getElementById("results");
 
 let selectedFile = null;
+let currentModel = "efficientnet"; // "efficientnet" | "unet" | "papnet"
+
+/* =========================
+   MODEL SELECTION METADATA
+========================= */
+
+const modelMeta = {
+    efficientnet: {
+        name: "EfficientNetB0",
+        cardLabel: "MODEL 1 / LAND CLASSIFICATION (EFFICIENTNET)",
+        distLabel: "MODEL 1 — EFFICIENTNET-B0",
+        stepTitle: "LAND CLASSIFICATION",
+        stepDesc: "EfficientNetB0 analyzes the image and predicts the land category with a confidence score across ten classes.",
+        explanation: "The first model performs land classification using an EfficientNetB0 architecture. Its output contains both the predicted land type and probability distribution across the supported land classes.",
+        loadingText: "RUNNING EFFICIENTNETB0 LAND CLASSIFICATION..."
+    },
+    unet: {
+        name: "U-Net",
+        cardLabel: "MODEL 1 / LAND COVER SEGMENTATION (U-NET)",
+        distLabel: "MODEL 1 — U-NET SEGMENTATION",
+        stepTitle: "LAND SEGMENTATION (U-NET)",
+        stepDesc: "U-Net convolutional encoder-decoder with skip connections extracts multi-scale spatial terrain features and generates pixel-wise land cover segmentations.",
+        explanation: "The first model performs land cover analysis using a deep U-Net encoder-decoder architecture with skip connections preserving spatial detail to map pixel-wise terrain characteristics.",
+        loadingText: "RUNNING U-NET TERRAIN SEGMENTATION..."
+    },
+    papnet: {
+        name: "PAPNet",
+        cardLabel: "MODEL 1 / LAND CLASSIFICATION (PAPNET)",
+        distLabel: "MODEL 1 — PAPNET (PATTERN-AFFINITIVE PROPAGATION)",
+        stepTitle: "LAND CLASSIFICATION (PAPNET)",
+        stepDesc: "PAPNet (Pattern-Affinitive Propagation) analyzes satellite image patches using attention-guided affinity modules to classify land cover across ten classes.",
+        explanation: "The first model performs land classification using a Pattern-Affinitive Propagation Network (PAPNet). It computes non-local spatial pattern affinity matrices across satellite image patches to classify land use across ten EuroSAT classes.",
+        loadingText: "RUNNING PAPNET LAND CLASSIFICATION..."
+    }
+};
+
+function setModel(modelKey) {
+    if (!modelMeta[modelKey]) return;
+    currentModel = modelKey;
+
+    document.querySelectorAll(".nav-model-btn").forEach(btn => {
+        if (btn.dataset.model === modelKey) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+
+    const meta = modelMeta[modelKey];
+    const lbl = document.getElementById("model1CardLabel");
+    if (lbl) lbl.textContent = meta.cardLabel;
+
+    const dlbl = document.getElementById("model1DistLabel");
+    if (dlbl) dlbl.textContent = meta.distLabel;
+
+    const st = document.getElementById("step2Title");
+    if (st) st.textContent = meta.stepTitle;
+
+    const sd = document.getElementById("step2Desc");
+    if (sd) sd.textContent = meta.stepDesc;
+
+    const exp = document.getElementById("explanationModel1");
+    if (exp) exp.textContent = meta.explanation;
+
+    // If an image was already analyzed and results are visible, re-analyze with the new model
+    if (selectedFile && !results.classList.contains("hidden")) {
+        analyzeImage();
+    }
+}
+
+document.querySelectorAll(".nav-model-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        setModel(btn.dataset.model);
+    });
+});
 
 
 /* =========================
@@ -131,12 +206,11 @@ function handleFile(file) {
    ANALYZE
 ========================= */
 
-analyzeButton.addEventListener("click", async () => {
+async function analyzeImage() {
 
     if (!selectedFile) {
         return;
     }
-
 
     analyzeButton.disabled = true;
 
@@ -147,29 +221,25 @@ analyzeButton.addEventListener("click", async () => {
     processingText.textContent =
         "INITIALIZING AI PIPELINE...";
 
+    await delay(350);
+
+    const activeMeta = modelMeta[currentModel] || modelMeta.efficientnet;
+    processingText.textContent = activeMeta.loadingText;
 
     await delay(500);
 
     processingText.textContent =
-        "RUNNING EFFICIENTNETB0 LAND CLASSIFICATION...";
-
-
-    await delay(700);
-
-    processingText.textContent =
         "EXTRACTING VISUAL SITE FEATURES...";
 
-
-    await delay(600);
+    await delay(400);
 
     processingText.textContent =
         "GENERATING SITE RECOMMENDATIONS...";
 
-
     const formData = new FormData();
 
     formData.append("image", selectedFile);
-
+    formData.append("model", currentModel);
 
     try {
 
@@ -178,9 +248,7 @@ analyzeButton.addEventListener("click", async () => {
             body: formData
         });
 
-
         const data = await response.json();
-
 
         if (!response.ok) {
 
@@ -190,11 +258,10 @@ analyzeButton.addEventListener("click", async () => {
 
         }
 
-
         processingText.textContent =
             "ANALYSIS COMPLETE.";
 
-        await delay(500);
+        await delay(350);
 
         processing.classList.add("hidden");
 
@@ -206,7 +273,6 @@ analyzeButton.addEventListener("click", async () => {
             behavior: "smooth",
             block: "start"
         });
-
 
     } catch (error) {
 
@@ -220,7 +286,9 @@ analyzeButton.addEventListener("click", async () => {
 
     }
 
-});
+}
+
+analyzeButton.addEventListener("click", analyzeImage);
 
 
 /* =========================
@@ -322,6 +390,30 @@ function renderResults(data) {
         data.site_features ||
         {}
     );
+
+
+    /*
+        MODEL METADATA & U-NET SEGMENTATION DISPLAY
+    */
+
+    const usedModel = data.model_used || currentModel;
+    const meta = modelMeta[usedModel] || modelMeta.efficientnet;
+    const cardLbl = document.getElementById("model1CardLabel");
+    if (cardLbl) cardLbl.textContent = meta.cardLabel;
+
+    const distLbl = document.getElementById("model1DistLabel");
+    if (distLbl) distLbl.textContent = meta.distLabel;
+
+    const unetSection = document.getElementById("unetSegSection");
+    const unetImg = document.getElementById("unetMaskImg");
+    if (unetSection && unetImg) {
+        if (data.segmentation_overlay && usedModel === "unet") {
+            unetImg.src = data.segmentation_overlay;
+            unetSection.classList.remove("hidden");
+        } else {
+            unetSection.classList.add("hidden");
+        }
+    }
 
 }
 

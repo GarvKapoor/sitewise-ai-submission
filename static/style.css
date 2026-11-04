@@ -201,6 +201,92 @@ body::before {
 }
 
 
+/* ============================================================
+   MODEL SELECTOR BUTTONS IN NAVBAR
+   ============================================================ */
+
+.nav-model-selector {
+    display: flex;
+    align-items: center;
+    background: rgba(10, 24, 18, 0.78);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.nav-model-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+}
+
+.nav-model-btn:hover {
+    color: var(--white);
+    background: rgba(85, 230, 154, 0.07);
+    border-color: rgba(85, 230, 154, 0.15);
+}
+
+.nav-model-btn .btn-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted-2);
+    transition: all 0.22s ease;
+}
+
+.nav-model-btn.active {
+    background: rgba(85, 230, 154, 0.14);
+    color: var(--green);
+    border-color: rgba(85, 230, 154, 0.45);
+    box-shadow: 0 0 16px rgba(85, 230, 154, 0.2);
+    font-weight: 600;
+}
+
+.nav-model-btn.active .btn-dot {
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+}
+
+/* U-Net segmentation overlay preview */
+.unet-seg-section {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+
+.unet-preview-wrap {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(85, 230, 154, 0.2);
+    background: #020704;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unet-mask-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+
 /* HERO */
 
 .hero {
@@ -1246,10 +1332,22 @@ footer {
 }
 
 
+@media (max-width: 850px) {
+    .nav-model-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+}
+
+
 @media (max-width: 760px) {
 
     .navbar {
-        padding: 0 5%;
+        padding: 12px 5%;
+        height: auto;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
     }
 
     .status {

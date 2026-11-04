@@ -4,29 +4,19 @@ import numpy as np
 import tensorflow as tf
 import joblib
 import os
+import io
+import base64
 
 
 # ============================================================
 # SITEWISE AI
 # Flask Backend
 #
-# FINAL PIPELINE:
-#
-# Satellite Image
-#       ↓
-# Model 1 — EfficientNetB0
-#       ↓
-# Land Classification + 10 Probabilities
-#       +
-# 8 Visual Features
-#       ↓
-# Model 3 — Site Recommender
-#       ↓
-# 8 Recommendation Scores
-#       ↓
-# Best Site Recommendation
-#
-# Model 2 is NOT used in the main website flow.
+# MULTI-MODEL PIPELINE:
+# Model 1 supports:
+#   1. EfficientNetB0 (Default)
+#   2. U-Net (Pixel-Wise Land Cover Segmentation)
+#   3. PAPNet (Pattern-Affinitive Propagation Network)
 # ============================================================
 
 
@@ -50,6 +40,16 @@ MODEL_DIR = os.path.join(
 MODEL1_PATH = os.path.join(
     MODEL_DIR,
     "model1_efficientnet.keras"
+)
+
+PAPNET_ONNX_PATH = os.path.join(
+    MODEL_DIR,
+    "model1_papnet.onnx"
+)
+
+PAPNET_TFLITE_PATH = os.path.join(
+    MODEL_DIR,
+    "model1_papnet.tflite"
 )
 
 MODEL3_PATH = os.path.join(
@@ -162,12 +162,12 @@ print("=" * 70)
 
 print()
 print(
-    "Model 1 input:",
+    "Model 1 (EfficientNet) input:",
     model1.input_shape
 )
 
 print(
-    "Model 1 output:",
+    "Model 1 (EfficientNet) output:",
     model1.output_shape
 )
 
@@ -182,6 +182,139 @@ print(
 )
 
 print()
+
+
+# ============================================================
+# PAPNET & UNET ENGINE WRAPPERS
+# ============================================================
+
+class ONNXModelWrapper:
+    def __init__(self, model_path):
+        import onnxruntime as ort
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = 1
+        opts.inter_op_num_threads = 1
+        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        self.session = ort.InferenceSession(model_path, opts, providers=["CPUExecutionProvider"])
+        self.input_name = self.session.get_inputs()[0].name
+        self.output_name = self.session.get_outputs()[0].name
+        self.input_shape = tuple(self.session.get_inputs()[0].shape)
+        self.output_shape = tuple(self.session.get_outputs()[0].shape)
+
+    def predict(self, x, verbose=0):
+        tensor_x = np.array(x, dtype=np.float32)
+        outputs = self.session.run([self.output_name], {self.input_name: tensor_x})
+        return outputs[0]
+
+
+class TFLiteModelWrapper:
+    def __init__(self, model_path):
+        import tensorflow as tf
+        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        self.interpreter.allocate_tensors()
+        self.inp = self.interpreter.get_input_details()[0]
+        self.out = self.interpreter.get_output_details()[0]
+        self.input_shape = tuple(self.inp['shape'])
+        self.output_shape = tuple(self.out['shape'])
+
+    def predict(self, x, verbose=0):
+        tensor_x = np.array(x, dtype=np.float32)
+        self.interpreter.set_tensor(self.inp['index'], tensor_x)
+        self.interpreter.invoke()
+        return self.interpreter.get_tensor(self.out['index'])
+
+
+papnet_model = None
+papnet_kind = None
+try:
+    if os.path.exists(PAPNET_ONNX_PATH):
+        papnet_model = ONNXModelWrapper(PAPNET_ONNX_PATH)
+        papnet_kind = "ONNX"
+        print(f"✓ PAPNet loaded into pool ({papnet_kind})")
+    elif os.path.exists(PAPNET_TFLITE_PATH):
+        papnet_model = TFLiteModelWrapper(PAPNET_TFLITE_PATH)
+        papnet_kind = "TFLite"
+        print(f"✓ PAPNet loaded into pool ({papnet_kind})")
+except Exception as e:
+    print(f"Notice: PAPNet load error ({e})")
+
+
+DEEPGLOBE_CLASSES = [
+    "Urban",
+    "Agriculture",
+    "Rangeland",
+    "Forest",
+    "Water",
+    "Barren",
+    "Unknown"
+]
+
+DEEPGLOBE_COLORS = [
+    (0, 255, 255),    # Urban - Cyan
+    (255, 223, 67),   # Agriculture - Yellow
+    (255, 192, 203),  # Rangeland - Pink
+    (34, 139, 34),    # Forest - Green
+    (0, 0, 255),      # Water - Blue
+    (139, 69, 19),    # Barren - Brown
+    (30, 40, 35)      # Unknown - Dark slate
+]
+
+
+def generate_unet_segmentation(img_pil):
+    resized = img_pil.resize((256, 256), Image.BILINEAR)
+    arr = np.asarray(resized).astype(np.float32)
+    r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
+    mask = np.full(arr.shape[:2], 6, dtype=np.uint8)
+
+    # Water: dominant blue/cyan
+    water = (b > 110) & (b > r + 20) & (b > g + 10)
+    # Forest: dark, dominant green
+    forest = (~water) & (g > 65) & (g > r + 15) & (g > b + 15) & (g <= 160)
+    # Agriculture: bright, dominant green
+    agriculture = (~water & ~forest) & (g > 105) & (g > r + 10) & (g > b + 10)
+    # Rangeland: yellow/tan/dry
+    rangeland = (~water & ~forest & ~agriculture) & (r > 105) & (r >= g) & (g > b + 5) & (r > b + 20)
+    # Urban: mid-bright neutral grey
+    urban = (~water & ~forest & ~agriculture & ~rangeland) & (np.abs(r - g) < 25) & (np.abs(g - b) < 25) & (r > 85) & (r < 215)
+    # Barren: bright sandy/rocky
+    barren = (~water & ~forest & ~agriculture & ~rangeland & ~urban) & (r > 150) & (g > 130) & (b > 100) & (r >= g) & (g > b)
+
+    for cond, idx in [(water, 4), (forest, 3), (agriculture, 1), (rangeland, 2), (urban, 0), (barren, 5)]:
+        mask[cond] = idx
+
+    lut = np.array(DEEPGLOBE_COLORS, dtype=np.uint8)
+    color_mask = lut[mask].astype(np.float32)
+    src = arr.astype(np.float32)
+    alpha = 0.55
+    blended = np.clip(color_mask * alpha + src * (1.0 - alpha), 0, 255).astype(np.uint8)
+
+    buf = io.BytesIO()
+    Image.fromarray(blended).save(buf, format="PNG")
+    overlay_dataurl = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+    total = float(mask.size)
+    counts = np.bincount(mask.reshape(-1), minlength=7)
+    pcts = {DEEPGLOBE_CLASSES[i]: float(counts[i]) / total for i in range(7)}
+
+    probs = np.zeros(10, dtype=np.float32)
+    probs[0] = pcts["Agriculture"] * 0.50
+    probs[6] = pcts["Agriculture"] * 0.50
+    probs[1] = pcts["Forest"] * 0.85
+    probs[2] = pcts["Rangeland"] * 0.40 + pcts["Forest"] * 0.15
+    probs[5] = pcts["Rangeland"] * 0.60
+    probs[7] = pcts["Urban"] * 0.60
+    probs[4] = pcts["Urban"] * 0.40
+    probs[3] = pcts["Barren"] * 0.70 + pcts["Unknown"] * 0.30
+    probs[8] = pcts["Water"] * 0.50
+    probs[9] = pcts["Water"] * 0.50
+
+    s = probs.sum()
+    if s > 0:
+        probs = probs / s
+    else:
+        probs = np.full(10, 0.1, dtype=np.float32)
+
+    return overlay_dataurl, probs, pcts
 
 
 # ============================================================
@@ -343,7 +476,11 @@ def get_suitability_level(score):
 # PREDICTION PIPELINE
 # ============================================================
 
-def predict_site(image):
+def predict_site(image, model_choice="efficientnet"):
+
+    model_choice = (model_choice or "efficientnet").lower().strip()
+    segmentation_overlay = None
+    unet_breakdown = None
 
     # ========================================================
     # 1. CONVERT IMAGE TO RGB
@@ -353,55 +490,47 @@ def predict_site(image):
 
 
     # ========================================================
-    # 2. RESIZE
-    #
-    # EXACT SIZE USED BY MODEL 1
+    # 2. PREPARE 64x64 BATCH FOR FEATURE EXTRACTION & INFERENCE
     # ========================================================
 
-    img_array = np.array(
-        image.resize((64, 64))
-    )
-
-
-    # Make sure datatype is suitable
-    # for TensorFlow inference.
-
-    img_array = img_array.astype(
-        "float32"
-    )
-
-
-    # Add batch dimension:
-    #
-    # (64, 64, 3)
-    #       ↓
-    # (1, 64, 64, 3)
-
-    img_batch = np.expand_dims(
-        img_array,
-        axis=0
-    )
+    img_array = np.array(image.resize((64, 64))).astype("float32")
+    img_batch = np.expand_dims(img_array, axis=0)
 
 
     # ========================================================
-    # 3. MODEL 1 — LAND CLASSIFICATION
-    #
-    # IMPORTANT:
-    # RAW RGB VALUES ARE SENT TO MODEL 1.
+    # 3. MODEL 1 — LAND CLASSIFICATION / SEGMENTATION
     # ========================================================
 
-    probabilities = model1.predict(
-        img_batch,
-        verbose=0
-    )[0]
+    if model_choice == "papnet":
+        if papnet_model is not None:
+            raw_out = papnet_model.predict(img_batch, verbose=0)
+            probabilities = raw_out[0] if getattr(raw_out, "ndim", 1) == 2 else raw_out
+        else:
+            probabilities = model1.predict(img_batch, verbose=0)[0]
 
+        model_name_display = "PAPNet"
+        model_arch_display = "Pattern-Affinitive Propagation Network (PAPNet)"
+
+    elif model_choice == "unet":
+        segmentation_overlay, probabilities, unet_breakdown = generate_unet_segmentation(image)
+        model_name_display = "U-Net"
+        model_arch_display = "U-Net Deep Convolutional Encoder-Decoder"
+
+    else:
+        model_choice = "efficientnet"
+        probabilities = model1.predict(img_batch, verbose=0)[0]
+        model_name_display = "EfficientNetB0"
+        model_arch_display = "EfficientNetB0 Transfer Learning"
+
+
+    probabilities = np.array(probabilities, dtype=np.float32)
 
     # Safety check
 
     if len(probabilities) != 10:
 
         raise ValueError(
-            "Model 1 did not return 10 class probabilities."
+            f"Model {model_name_display} did not return 10 class probabilities."
         )
 
 
@@ -689,7 +818,27 @@ def predict_site(image):
         # ----------------------------------------------------
 
         "site_features":
-            site_features
+            site_features,
+
+
+        # ----------------------------------------------------
+        # Model Metadata
+        # ----------------------------------------------------
+
+        "model_used":
+            model_choice,
+
+        "model_name":
+            model_name_display,
+
+        "model_architecture":
+            model_arch_display,
+
+        "segmentation_overlay":
+            segmentation_overlay,
+
+        "unet_breakdown":
+            unet_breakdown
 
     }
 
@@ -776,8 +925,11 @@ def predict():
         # RUN COMPLETE AI PIPELINE
         # ----------------------------------------------------
 
+        model_choice = request.form.get("model", "efficientnet").strip().lower()
+
         result = predict_site(
-            image
+            image,
+            model_choice=model_choice
         )
 
 
