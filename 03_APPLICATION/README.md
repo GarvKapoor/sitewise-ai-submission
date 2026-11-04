@@ -76,35 +76,19 @@ SiteWise AI utilizes a multi-stage hierarchical inference pipeline:
 # File Structure
 
 ```text
-dl-proj/
-├── app.py                     # Unified production Flask backend with dynamic model switching
-├── requirements.txt           # Lean deployment dependencies (Flask, gunicorn, onnxruntime)
-├── Procfile                   # Process file for Render.com deployment (gunicorn 1 worker, 4 threads)
-├── render.yaml                # Render.com blueprint configuration
-├── convert_all_models.py      # Live conversion utility (.keras -> .tflite & .onnx)
-├── Ai_project_report.docx     # Comprehensive project report
-├── models/                    # Production model weights and scalers
-│   ├── model1_efficientnet.keras / .onnx / .tflite
-│   ├── model1_papnet.keras / .onnx / .tflite
-│   ├── model2_suitability.keras / .onnx / .tflite
-│   ├── model3_recommender.keras / .onnx / .tflite
-│   ├── model2_scaler.pkl
-│   └── model3_scaler.pkl
-├── templates/
-│   └── index.html             # UI with centered EfficientNet/UNet/PAPNet model selector
-├── static/
-│   ├── style.css              # Cyber-themed styling and layout
-│   ├── script.js              # Frontend pipeline logic and dynamic telemetry rendering
-│   └── samples/               # Sample satellite tiles for testing (forest, urban, crops, etc.)
-│
-├── inayath-code/              # Source code, notebooks, and models developed by Inayath
-│   └── SiteWise-AI/           # Flask app, EfficientNetB0 implementation, EuroSAT training
-│
-├── aneesh-code/               # Source code, notebooks, and models developed by Aneesh
-│   └── SiteWise-AI/           # U-Net semantic segmentation, DeepGlobe pipeline, evaluation scripts
-│
-└── Garv-code/                 # Source code, notebooks, and models developed by Garv
-    └── site-wise-ai-papnet/   # PAPNet custom architecture, ONNX/TFLite low-memory optimizations
+sitewise-ai-submission/
+├── 01_REVIEW_PRESENTATIONS/       # Review presentations and PDF slide decks
+├── 02_MODEL_IMPLEMENTATIONS/       # Standalone model pipelines, source code, and benchmarks
+│   ├── 01_EfficientNetB0/         # EuroSAT classification pipeline (Inayath)
+│   ├── 02_PAPNet/                 # Pattern-Affinitive Propagation Network (Garv)
+│   └── 03_UNet/                   # DeepGlobe terrain semantic segmentation (Aneesh)
+├── 03_APPLICATION/                # Production full-stack deployment
+│   ├── Flask_Backend/             # Flask application & low-memory ONNX/TFLite model pool
+│   ├── Frontend/                  # HTML templates and static assets (CSS, JS, samples)
+│   └── Model_Selection/           # Multi-model architecture selector documentation
+├── 04_FINAL_PROJECT_REPORT/       # Complete technical project report (DOCX)
+├── 05_IEEE_RESEARCH_ARTICLE/      # Formatted IEEE research paper & 30+ academic citations
+└── 06_PROJECT_LINKS/              # Project GitHub repository and demonstration links
 ```
 
 ---

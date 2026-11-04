@@ -1,0 +1,32 @@
+[1] M. Reichstein et al., 'Deep learning and Earth system science,' Nature, vol. 566, pp. 195–204, 2019.
+[2] D. Lu and Q. Weng, 'A survey of image classification methods and techniques for improving classification performance,' Int. J. Remote Sens., vol. 28, no. 5, pp. 823–870, 2007.
+[3] L. Zhang, L. Zhang, and B. Du, 'Deep learning for remote sensing data,' IEEE Geosci. Remote Sens. Mag., vol. 4, no. 2, pp. 22–40, 2016.
+[4] X. X. Zhu et al., 'Deep learning in remote sensing: A comprehensive review and list of resources,' IEEE Geosci. Remote Sens. Mag., vol. 5, no. 4, pp. 8–36, 2017.
+[5] C. Huang, L. S. Davis, and J. R. Townshend, 'An assessment of support vector machines for land cover classification,' Int. J. Remote Sens., vol. 23, no. 4, pp. 725–749, 2002.
+[6] P. Helber, B. Bischke, A. Dengel, and D. Borth, 'EuroSAT: A Novel Dataset and Deep Learning Benchmark for Land Use and Land Cover Classification,' IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens., vol. 12, no. 7, pp. 2217–2226, 2019.
+[7] M. Tan and Q. V. Le, 'EfficientNet: Rethinking model scaling for convolutional neural networks,' in Proc. 36th Int. Conf. Mach. Learn. (ICML), 2019, pp. 6105–6114.
+[8] O. Ronneberger, P. Fischer, and T. Brox, 'U-Net: Convolutional networks for biomedical image segmentation,' in Proc. MICCAI, 2015, pp. 234–241.
+[9] I. Demir et al., 'DeepGlobe 2018: A challenge to parse the earth through satellite images,' in Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR) Workshops, 2018, pp. 172–181.
+[10] X. Wang, R. Girshick, A. Gupta, and K. He, 'Non-local neural networks,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2018, pp. 7794–7803.
+[11] A. Vaswani et al., 'Attention is all you need,' in Adv. Neural Inf. Process. Syst. (NeurIPS), 2017, pp. 5998–6008.
+[12] K. He, X. Zhang, S. Ren, and J. Sun, 'Deep residual learning for image recognition,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2016, pp. 770–778.
+[13] J. Hu, L. Shen, and G. Sun, 'Squeeze-and-excitation networks,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2018, pp. 7132–7141.
+[14] M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L.-C. Chen, 'MobileNetV2: Inverted residuals and linear bottlenecks,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2018, pp. 4510–4520.
+[15] A. Dosovitskiy et al., 'An image is worth 16x16 words: Transformers for image recognition at scale,' in Proc. Int. Conf. Learn. Represent. (ICLR), 2021.
+[16] Z. Liu et al., 'Swin transformer: Hierarchical vision transformer using shifted windows,' in Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV), 2021, pp. 10012–10022.
+[17] G. Camps-Valls et al., 'Machine learning for Earth observation: Recent advances and challenges,' IEEE Geosci. Remote Sens. Mag., vol. 9, no. 4, pp. 70–84, 2021.
+[18] D. Rolnick et al., 'Tackling climate change with machine learning,' ACM Comput. Surv., vol. 55, no. 2, pp. 1–96, 2022.
+[19] L. C. Chen, G. Papandreou, I. Kokkinos, K. Murphy, and A. L. Yuille, 'DeepLab: Semantic image segmentation with deep convolutional nets, atrous convolution, and fully connected CRFs,' IEEE Trans. Pattern Anal. Mach. Intell., vol. 40, no. 4, pp. 834–848, 2017.
+[20] H. Zhao, J. Shi, X. Qi, X. Wang, and J. Jia, 'Pyramid scene parsing network,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2017, pp. 2881–2890.
+[21] B. Bischke, P. Helber, J. Folz, D. Borth, and A. Dengel, 'Multi-task learning for segmentation of building footprints with semantic boundaries,' in Proc. Int. Conf. Image Process. (ICIP), 2019.
+[22] S. Hao et al., 'A two-stream attention-aware network for remote sensing scene classification,' IEEE Trans. Geosci. Remote Sens., vol. 59, no. 4, pp. 3452–3466, 2020.
+[23] Y. Long, Y. Gong, Z. Xiao, and Q. Liu, 'Accurate object detection in large-scale remote sensing images using deep feature fusion,' IEEE Trans. Geosci. Remote Sens., vol. 56, no. 4, pp. 1809–1822, 2017.
+[24] F. Hu, G.-S. Xia, J. Hu, and L. Zhang, 'Transferring deep convolutional neural networks for the scene classification of high-resolution remote sensing imagery,' Remote Sens., vol. 7, no. 11, pp. 14680–14707, 2015.
+[25] J. Bai et al., 'ONNX: Open Neural Network Exchange format,' Linux Foundation, 2019. [Online]. Available: https://onnx.ai
+[26] M. Abadi et al., 'TensorFlow: A system for large-scale machine learning,' in 12th USENIX OSDI, 2016, pp. 265–283.
+[27] F. Chollet, 'Xception: Deep learning with depthwise separable convolutions,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2017, pp. 1251–1258.
+[28] T. Lin, P. Goyal, R. Girshick, K. He, and P. Dollar, 'Focal loss for dense object detection,' in Proc. IEEE Int. Conf. Comput. Vis. (ICCV), 2017, pp. 2980–2988.
+[29] J. Long, E. Shelhamer, and T. Darrell, 'Fully convolutional networks for semantic segmentation,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2015, pp. 3431–3440.
+[30] G. J. Scott et al., 'Training deep convolutional neural networks on satellite imagery: Lessons learned,' in Proc. IEEE Appl. Imagery Pattern Recognit. Workshop (AIPR), 2017, pp. 1–9.
+[31] C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna, 'Rethinking the inception architecture for computer vision,' in Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR), 2016, pp. 2818–2826.
+[32] S. Ioffe and C. Szegedy, 'Batch normalization: Accelerating deep network training by reducing internal covariate shift,' in Proc. Int. Conf. Mach. Learn. (ICML), 2015, pp. 448–456.
