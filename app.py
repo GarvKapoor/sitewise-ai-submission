@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, jsonify
 from PIL import Image
 import numpy as np
-import tensorflow as tf
 import joblib
 import os
 import io
 import base64
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = None
 
 
 # ============================================================
@@ -108,84 +112,8 @@ RECOMMENDATION_NAMES = [
 
 
 # ============================================================
-# LOAD MODELS
-# ============================================================
-
-print()
-print("=" * 70)
-print("                    SITEWISE AI")
-print("=" * 70)
-
-print()
-print("Loading Model 1...")
-print(
-    f"Path: {MODEL1_PATH}"
-)
-
-model1 = tf.keras.models.load_model(
-    MODEL1_PATH
-)
-
-print("✓ Model 1 loaded")
-
-
-print()
-print("Loading Model 3...")
-print(
-    f"Path: {MODEL3_PATH}"
-)
-
-model3 = tf.keras.models.load_model(
-    MODEL3_PATH
-)
-
-print("✓ Model 3 loaded")
-
-
-print()
-print("Loading Model 3 scaler...")
-print(
-    f"Path: {MODEL3_SCALER_PATH}"
-)
-
-model3_scaler = joblib.load(
-    MODEL3_SCALER_PATH
-)
-
-print("✓ Model 3 scaler loaded")
-
-
-print()
-print("=" * 70)
-print("ALL REQUIRED MODELS LOADED")
-print("=" * 70)
-
-print()
-print(
-    "Model 1 (EfficientNet) input:",
-    model1.input_shape
-)
-
-print(
-    "Model 1 (EfficientNet) output:",
-    model1.output_shape
-)
-
-print(
-    "Model 3 input:",
-    model3.input_shape
-)
-
-print(
-    "Model 3 output:",
-    model3.output_shape
-)
-
-print()
-
-
-# ============================================================
-# PAPNET & UNET ENGINE WRAPPERS
+# LOW-MEMORY MODEL ENGINE WRAPPERS (ONNX & TFLITE)
+# Optimized for 512MB RAM cloud hosts (e.g. Render.com free tier)
 # ============================================================
 
 class ONNXModelWrapper:
@@ -209,8 +137,16 @@ class ONNXModelWrapper:
 
 class TFLiteModelWrapper:
     def __init__(self, model_path):
-        import tensorflow as tf
-        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        try:
+            from ai_edge_litert.interpreter import Interpreter
+        except ImportError:
+            try:
+                from tflite_runtime.interpreter import Interpreter
+            except ImportError:
+                import tensorflow as _tf
+                Interpreter = _tf.lite.Interpreter
+
+        self.interpreter = Interpreter(model_path=model_path)
         self.interpreter.allocate_tensors()
         self.inp = self.interpreter.get_input_details()[0]
         self.out = self.interpreter.get_output_details()[0]
@@ -224,19 +160,75 @@ class TFLiteModelWrapper:
         return self.interpreter.get_tensor(self.out['index'])
 
 
-papnet_model = None
-papnet_kind = None
-try:
-    if os.path.exists(PAPNET_ONNX_PATH):
-        papnet_model = ONNXModelWrapper(PAPNET_ONNX_PATH)
-        papnet_kind = "ONNX"
-        print(f"✓ PAPNet loaded into pool ({papnet_kind})")
-    elif os.path.exists(PAPNET_TFLITE_PATH):
-        papnet_model = TFLiteModelWrapper(PAPNET_TFLITE_PATH)
-        papnet_kind = "TFLite"
-        print(f"✓ PAPNet loaded into pool ({papnet_kind})")
-except Exception as e:
-    print(f"Notice: PAPNet load error ({e})")
+def load_model_flexible(name):
+    onnx_path = os.path.join(MODEL_DIR, f"{name}.onnx")
+    tflite_path = os.path.join(MODEL_DIR, f"{name}.tflite")
+    keras_path = os.path.join(MODEL_DIR, f"{name}.keras")
+
+    if os.path.exists(onnx_path):
+        try:
+            return ONNXModelWrapper(onnx_path), "ONNX"
+        except Exception as e:
+            print(f"Notice: ONNX load failed for {name}: {e}")
+
+    if os.path.exists(tflite_path):
+        try:
+            return TFLiteModelWrapper(tflite_path), "TFLite"
+        except Exception as e:
+            print(f"Notice: TFLite load failed for {name}: {e}")
+
+    if os.path.exists(keras_path) and tf is not None:
+        try:
+            return tf.keras.models.load_model(keras_path), "Keras"
+        except Exception as e:
+            print(f"Notice: Keras load failed for {name}: {e}")
+
+    raise RuntimeError(f"Could not load any model format for {name}")
+
+
+# ============================================================
+# LOAD MODELS
+# ============================================================
+
+print()
+print("=" * 70)
+print("                    SITEWISE AI")
+print("=" * 70)
+
+print()
+print("Loading Model 1 (EfficientNet)...")
+model1, m1_kind = load_model_flexible("model1_efficientnet")
+print(f"✓ Model 1 loaded ({m1_kind})")
+
+print()
+print("Loading PAPNet...")
+papnet_model, pap_kind = load_model_flexible("model1_papnet")
+print(f"✓ PAPNet loaded into pool ({pap_kind})")
+
+print()
+print("Loading Model 3 (Site Recommender)...")
+model3, m3_kind = load_model_flexible("model3_recommender")
+print(f"✓ Model 3 loaded ({m3_kind})")
+
+print()
+print("Loading Model 3 scaler...")
+print(f"Path: {MODEL3_SCALER_PATH}")
+model3_scaler = joblib.load(MODEL3_SCALER_PATH)
+print("✓ Model 3 scaler loaded")
+
+print()
+print("=" * 70)
+print("ALL REQUIRED MODELS LOADED (LOW-MEMORY ENGINE)")
+print("=" * 70)
+
+print()
+print("Model 1 (EfficientNet) input:", model1.input_shape)
+print("Model 1 (EfficientNet) output:", model1.output_shape)
+print("PAPNet input:", papnet_model.input_shape)
+print("PAPNet output:", papnet_model.output_shape)
+print("Model 3 input:", model3.input_shape)
+print("Model 3 output:", model3.output_shape)
+print()
 
 
 DEEPGLOBE_CLASSES = [
