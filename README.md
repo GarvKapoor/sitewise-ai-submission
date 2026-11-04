@@ -70,8 +70,9 @@ SiteWise AI utilizes a multi-stage hierarchical inference pipeline:
 - **Mechanism:** Integrates **Pattern Affinity Modules (PAM)** that compute non-local pairwise spatial affinity matrices:
 
   $$\text{Affinity}(Q, K) = \text{Softmax}\left(\frac{Q \cdot K^T}{\sqrt{d_k}}\right)$$
-  Contextual features are aggregated across the entire spatial receptive field and combined with local representations using a learnable residual gating parameter ($\gamma$).
   
+  Contextual features are aggregated across the entire spatial receptive field and combined with local representations using a learnable residual gating parameter ($\gamma$).
+
 - **Advantage:** Overcomes the limitations of standard local convolutions by connecting disjoint spatial structures across a satellite tile (such as fragmented crop parcels, winding river channels, or discontinuous highway networks).
 - **Weights:** Optimized in `.keras`, `.onnx` (29 MB), and `.tflite` (28 MB) formats for sub-second, ultra-low memory execution (<120MB RAM).
 
