@@ -10,7 +10,7 @@ This project is submitted by:
 **Registration Numbers:** `24BCA8067`, `24BCA7850`, `24BCA7708`, `24BCE7118`  
 *School of Computer Science and Engineering, Vellore Institute of Technology (VIT-AP University)*
 
-> **Project Report:** The complete academic and technical documentation for this project is detailed in [`Ai_project_report.docx`](./Ai_project_report.docx) (and [`SiteWise_AI_Complete_Project_Report (1).docx`](./SiteWise_AI_Complete_Project_Report%20(1).docx)).
+> **Project Report:** The complete academic and technical documentation for this project is detailed in [`Ai_project_report.docx`](./Ai_project_report.docx).
 
 ---
 
