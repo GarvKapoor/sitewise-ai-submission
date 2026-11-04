@@ -115,7 +115,7 @@ sitewise-ai-submission/
 ```bash
 # 1. Create and activate a virtual environment
 git clone https://github.com/GarvKapoor/sitewise-ai-submission.git
-cd /Users/garvkapoor/dl-proj/03_APPLICATION
+cd sitewise-ai-submission/03_APPLICATION
 python -m venv venv
 source venv/bin/activate  # On Windows: .venv\Scripts\activate
 
