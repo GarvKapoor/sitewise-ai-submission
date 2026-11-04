@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SiteWise AI — Land Intelligence</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="noise"></div>
+<div class="grid-bg"></div>
+
+<header class="navbar">
+
+    <div class="brand">
+        <div class="brand-mark">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div>
+            <div class="brand-name">SITEWISE<span>AI</span></div>
+            <div class="brand-sub">LAND INTELLIGENCE PLATFORM</div>
+        </div>
+    </div>
+
+    <div class="status">
+        <span class="status-dot"></span>
+        AI SYSTEM ONLINE
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-copy">
+
+            <div class="eyebrow">
+                <span></span>
+                SATELLITE INTELLIGENCE
+            </div>
+
+            <h1>
+                KNOW YOUR LAND
+                <br>
+              <em>and</em>  BUILD  <em>Smarter.</em>
+            </h1>
+
+            <p class="hero-description">
+                Upload a satellite image and let SiteWise AI
+                classify the land, analyze visual characteristics,
+                and determine its most suitable development use.
+            </p>
+
+            <div class="pipeline-mini">
+
+                <div>
+                    <strong>01</strong>
+                    <span>IMAGE</span>
+                </div>
+
+                <i>→</i>
+
+                <div>
+                    <strong>02</strong>
+                    <span>CLASSIFY</span>
+                </div>
+
+                <i>→</i>
+
+                <div>
+                    <strong>03</strong>
+                    <span>ANALYZE</span>
+                </div>
+
+                <i>→</i>
+
+                <div>
+                    <strong>04</strong>
+                    <span>RECOMMEND</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- UPLOAD -->
+
+        <div class="upload-panel">
+
+            <div class="panel-top">
+                <span>01 / INPUT</span>
+                <span>IMAGE ANALYSIS</span>
+            </div>
+
+            <div id="dropZone" class="drop-zone">
+
+                <div id="uploadPlaceholder">
+
+                    <div class="upload-icon">
+                        <div class="satellite-icon">⌁</div>
+                    </div>
+
+                    <h2>DROP SATELLITE IMAGE</h2>
+
+                    <p>
+                        Drag & drop your image here
+                        <br>
+                        or select a file manually
+                    </p>
+
+                    <div class="formats">
+                        JPG &nbsp;•&nbsp; JPEG &nbsp;•&nbsp; PNG
+                    </div>
+
+                </div>
+
+
+                <img id="previewImage" class="preview-image" alt="Satellite preview">
+
+                <div id="fileInfo" class="file-info">
+                    <span id="fileName"></span>
+                </div>
+
+            </div>
+
+            <input
+                type="file"
+                id="imageInput"
+                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                hidden
+            >
+
+            <button id="selectButton" class="secondary-button">
+                SELECT IMAGE
+            </button>
+
+            <button id="analyzeButton" class="analyze-button" disabled>
+                <span class="button-text">ANALYZE SITE</span>
+                <span class="button-arrow">↗</span>
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROCESSING -->
+
+    <section id="processing" class="processing hidden">
+
+        <div class="scanner"></div>
+
+        <div class="processing-content">
+
+            <div class="loader-ring"></div>
+
+            <div>
+                <div class="processing-title">
+                    SITEWISE AI ANALYSIS
+                </div>
+
+                <div id="processingText">
+                    INITIALIZING AI PIPELINE...
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    <section id="results" class="results hidden">
+
+        <div class="section-heading">
+
+            <div>
+                <div class="eyebrow">
+                    <span></span>
+                    ANALYSIS COMPLETE
+                </div>
+
+                <h2>SITE INTELLIGENCE</h2>
+            </div>
+
+            <div class="result-tag">
+                LIVE INFERENCE
+            </div>
+
+        </div>
+
+
+        <!-- MAIN RESULT -->
+
+        <div class="result-grid">
+
+            <!-- LAND -->
+
+            <div class="result-card land-card">
+
+                <div class="card-label">
+                    MODEL 1 / LAND CLASSIFICATION
+                </div>
+
+                <div class="land-content">
+
+                    <div>
+
+                        <div class="small-label">
+                            DETECTED LAND TYPE
+                        </div>
+
+                        <h3 id="landType">
+                            —
+                        </h3>
+
+                        <div class="confidence-text">
+                            MODEL CONFIDENCE
+                            <strong id="landConfidence">0%</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="gauge">
+
+                        <svg viewBox="0 0 120 120">
+
+                            <circle
+                                class="gauge-track"
+                                cx="60"
+                                cy="60"
+                                r="48">
+                            </circle>
+
+                            <circle
+                                id="confidenceCircle"
+                                class="gauge-progress"
+                                cx="60"
+                                cy="60"
+                                r="48">
+                            </circle>
+
+                        </svg>
+
+                        <div class="gauge-value">
+                            <span id="confidenceGauge">0%</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECOMMENDATION -->
+
+            <div class="result-card recommendation-card">
+
+                <div class="card-label">
+                    MODEL 3 / SITE RECOMMENDER
+                </div>
+
+                <div class="recommendation-badge">
+                    BEST MATCH
+                </div>
+
+                <div class="recommendation-icon">
+                    ◆
+                </div>
+
+                <div class="small-label">
+                    RECOMMENDED SITE USE
+                </div>
+
+                <h3 id="recommendation">
+                    —
+                </h3>
+
+                <div class="suitability-row">
+
+                    <div>
+                        <span>PROJECT SUITABILITY</span>
+                        <strong id="suitabilityValue">0%</strong>
+                    </div>
+
+                    <div class="suitability-bar">
+                        <span id="suitabilityBar"></span>
+                    </div>
+
+                </div>
+
+                <div id="decision" class="decision">
+                    ANALYZING
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECOMMENDATION RANKING -->
+
+        <div class="large-card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="card-label">
+                        RECOMMENDATION ENGINE
+                    </div>
+
+                    <h3>DEVELOPMENT RANKING</h3>
+                </div>
+
+                <span class="mono-label">
+                    MODEL 3
+                </span>
+
+            </div>
+
+            <div id="recommendationList" class="recommendation-list">
+            </div>
+
+        </div>
+
+
+        <!-- MODEL PROBABILITIES -->
+
+        <div class="two-column">
+
+            <div class="large-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <div class="card-label">
+                            MODEL 1
+                        </div>
+
+                        <h3>LAND CLASS DISTRIBUTION</h3>
+                    </div>
+
+                </div>
+
+                <div id="landProbabilities" class="probability-list">
+                </div>
+
+            </div>
+
+
+            <!-- VISUAL FEATURES -->
+
+            <div class="large-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <div class="card-label">
+                            IMAGE ANALYSIS
+                        </div>
+
+                        <h3>VISUAL SITE FEATURES</h3>
+                    </div>
+
+                </div>
+
+                <div id="siteFeatures" class="feature-grid">
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+
+    <section class="how-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    <span></span>
+                    UNDER THE HOOD
+                </div>
+
+                <h2>HOW SITEWISE THINKS</h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="architecture">
+
+            <div class="architecture-step">
+
+                <div class="step-number">01</div>
+
+                <div class="step-icon">◎</div>
+
+                <h3>SATELLITE IMAGE</h3>
+
+                <p>
+                    A satellite image is uploaded by the user
+                    and resized to the model's required input
+                    resolution.
+                </p>
+
+            </div>
+
+
+            <div class="architecture-line"></div>
+
+
+            <div class="architecture-step active-step">
+
+                <div class="step-number">02</div>
+
+                <div class="step-icon">AI</div>
+
+                <h3>LAND CLASSIFICATION</h3>
+
+                <p>
+                    EfficientNetB0 analyzes the image and
+                    predicts the land category with a confidence
+                    score across ten classes.
+                </p>
+
+            </div>
+
+
+            <div class="architecture-line"></div>
+
+
+            <div class="architecture-step">
+
+                <div class="step-number">03</div>
+
+                <div class="step-icon">◈</div>
+
+                <h3>FEATURE EXTRACTION</h3>
+
+                <p>
+                    Visual characteristics such as vegetation,
+                    water, brightness, built-up area and road
+                    indicators are extracted.
+                </p>
+
+            </div>
+
+
+            <div class="architecture-line"></div>
+
+
+            <div class="architecture-step">
+
+                <div class="step-number">04</div>
+
+                <div class="step-icon">✦</div>
+
+                <h3>SITE RECOMMENDATION</h3>
+
+                <p>
+                    Model 3 combines the visual features and
+                    land-class probabilities to rank possible
+                    development uses.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROJECT EXPLANATION -->
+
+    <section class="explanation">
+
+        <div class="explanation-grid">
+
+            <div>
+
+                <div class="eyebrow">
+                    <span></span>
+                    PROJECT INTELLIGENCE
+                </div>
+
+                <h2>
+                    FROM PIXELS
+                    <br>
+                    TO <em>DECISIONS.</em>
+                </h2>
+
+            </div>
+
+
+            <div class="explanation-copy">
+
+                <p>
+                    SiteWise AI is designed as a multi-stage
+                    deep-learning pipeline for satellite-image
+                    analysis.
+                </p>
+
+                <p>
+                    The first model performs land classification
+                    using an EfficientNetB0 architecture. Its
+                    output contains both the predicted land type
+                    and probability distribution across the
+                    supported land classes.
+                </p>
+
+                <p>
+                    SiteWise then extracts eight visual features
+                    from the image. These features describe
+                    characteristics such as vegetation,
+                    water presence, brightness, built-up regions
+                    and road-like structures.
+                </p>
+
+                <p>
+                    The second recommendation stage combines
+                    these visual features with the land-class
+                    probability vector. Model 3 produces
+                    project-defined suitability scores for
+                    multiple potential site uses.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="footer-brand">
+            SITEWISE<span>AI</span>
+        </div>
+
+        <div class="footer-text">
+            SATELLITE • AI • SITE INTELLIGENCE
+        </div>
+
+        <div class="footer-status">
+            SYSTEM READY
+        </div>
+
+    </footer>
+
+</main>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
