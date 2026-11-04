@@ -830,8 +830,10 @@ if __name__ == "__main__":
         "Open:"
     )
 
+    port = int(os.environ.get("PORT", 5001))
+
     print(
-        "http://127.0.0.1:5000"
+        f"http://127.0.0.1:{port}"
     )
 
     print()
@@ -849,5 +851,6 @@ if __name__ == "__main__":
 
 
     app.run(
-        debug=True
+        debug=True,
+        port=port
     )
