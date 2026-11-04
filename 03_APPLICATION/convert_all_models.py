@@ -24,6 +24,7 @@ MODELS_DIR = os.path.join(SCRIPT_DIR, "models")
 MODELS = [
     ("model1_efficientnet.keras", "model1_efficientnet.tflite", "model1_efficientnet.onnx", None),
     ("model1_papnet.keras", "model1_papnet.tflite", "model1_papnet.onnx", custom_objects),
+    ("model1_unet.keras", "model1_unet.tflite", "model1_unet.onnx", None),
     ("model2_suitability.keras", "model2_suitability.tflite", "model2_suitability.onnx", None),
     ("model3_recommender.keras", "model3_recommender.tflite", "model3_recommender.onnx", None),
 ]

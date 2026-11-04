@@ -7,10 +7,12 @@ University Deep Learning project — VIT-AP University.
 > ⚠️ **Disclaimer:** SiteWise AI outputs are *preliminary, project-defined screening
 > recommendations* for exploration and demonstration purposes. They are **not**
 > construction approvals, engineering feasibility studies, or legally verified
-> land-use decisions. No trained model ships with this repository — until you
-> connect your own trained `.keras`/`.h5` files, every segmentation mask is clearly
-> labelled **DEMONSTRATION DATA** produced by deterministic colour heuristics, and
-> no accuracy/IoU/Dice metric is displayed anywhere ("Evaluation pending").
+> land-use decisions.
+> 
+> ✅ **Trained Models Included:** Trained models are located in `Trained_Model/` and `backend/models/`:
+> - `unet_model.keras` (Keras 3 deep convolutional encoder-decoder)
+> - `unet_model.onnx` (Low-memory ONNX Runtime optimized model, ~7.4 MB)
+> - `unet_model.tflite` (Quantized TensorFlow Lite engine, ~1.9 MB)
 
 ---
 

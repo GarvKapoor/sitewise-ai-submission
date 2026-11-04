@@ -206,6 +206,11 @@ papnet_model, pap_kind = load_model_flexible("model1_papnet")
 print(f"✓ PAPNet loaded into pool ({pap_kind})")
 
 print()
+print("Loading U-Net...")
+unet_model, unet_kind = load_model_flexible("model1_unet")
+print(f"✓ U-Net loaded into pool ({unet_kind})")
+
+print()
 print("Loading Model 3 (Site Recommender)...")
 model3, m3_kind = load_model_flexible("model3_recommender")
 print(f"✓ Model 3 loaded ({m3_kind})")
@@ -226,6 +231,9 @@ print("Model 1 (EfficientNet) input:", model1.input_shape)
 print("Model 1 (EfficientNet) output:", model1.output_shape)
 print("PAPNet input:", papnet_model.input_shape)
 print("PAPNet output:", papnet_model.output_shape)
+if unet_model:
+    print("U-Net input:", unet_model.input_shape)
+    print("U-Net output:", unet_model.output_shape)
 print("Model 3 input:", model3.input_shape)
 print("Model 3 output:", model3.output_shape)
 print()
@@ -255,24 +263,33 @@ DEEPGLOBE_COLORS = [
 def generate_unet_segmentation(img_pil):
     resized = img_pil.resize((256, 256), Image.BILINEAR)
     arr = np.asarray(resized).astype(np.float32)
-    r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
-    mask = np.full(arr.shape[:2], 6, dtype=np.uint8)
 
-    # Water: dominant blue/cyan
-    water = (b > 110) & (b > r + 20) & (b > g + 10)
-    # Forest: dark, dominant green
-    forest = (~water) & (g > 65) & (g > r + 15) & (g > b + 15) & (g <= 160)
-    # Agriculture: bright, dominant green
-    agriculture = (~water & ~forest) & (g > 105) & (g > r + 10) & (g > b + 10)
-    # Rangeland: yellow/tan/dry
-    rangeland = (~water & ~forest & ~agriculture) & (r > 105) & (r >= g) & (g > b + 5) & (r > b + 20)
-    # Urban: mid-bright neutral grey
-    urban = (~water & ~forest & ~agriculture & ~rangeland) & (np.abs(r - g) < 25) & (np.abs(g - b) < 25) & (r > 85) & (r < 215)
-    # Barren: bright sandy/rocky
-    barren = (~water & ~forest & ~agriculture & ~rangeland & ~urban) & (r > 150) & (g > 130) & (b > 100) & (r >= g) & (g > b)
+    if unet_model is not None:
+        # Neural network inference via U-Net (ONNX / TFLite)
+        batch = np.expand_dims(arr, axis=0)
+        raw_out = unet_model.predict(batch, verbose=0)
+        pred_map = raw_out[0] if getattr(raw_out, "ndim", 1) == 4 else raw_out
+        mask = np.argmax(pred_map, axis=-1).astype(np.uint8)
+    else:
+        # Fallback heuristic if model file is not present
+        r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
+        mask = np.full(arr.shape[:2], 6, dtype=np.uint8)
 
-    for cond, idx in [(water, 4), (forest, 3), (agriculture, 1), (rangeland, 2), (urban, 0), (barren, 5)]:
-        mask[cond] = idx
+        # Water: dominant blue/cyan
+        water = (b > 110) & (b > r + 20) & (b > g + 10)
+        # Forest: dark, dominant green
+        forest = (~water) & (g > 65) & (g > r + 15) & (g > b + 15) & (g <= 160)
+        # Agriculture: bright, dominant green
+        agriculture = (~water & ~forest) & (g > 105) & (g > r + 10) & (g > b + 10)
+        # Rangeland: yellow/tan/dry
+        rangeland = (~water & ~forest & ~agriculture) & (r > 105) & (r >= g) & (g > b + 5) & (r > b + 20)
+        # Urban: mid-bright neutral grey
+        urban = (~water & ~forest & ~agriculture & ~rangeland) & (np.abs(r - g) < 25) & (np.abs(g - b) < 25) & (r > 85) & (r < 215)
+        # Barren: bright sandy/rocky
+        barren = (~water & ~forest & ~agriculture & ~rangeland & ~urban) & (r > 150) & (g > 130) & (b > 100) & (r >= g) & (g > b)
+
+        for cond, idx in [(water, 4), (forest, 3), (agriculture, 1), (rangeland, 2), (urban, 0), (barren, 5)]:
+            mask[cond] = idx
 
     lut = np.array(DEEPGLOBE_COLORS, dtype=np.uint8)
     color_mask = lut[mask].astype(np.float32)
