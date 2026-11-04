@@ -117,7 +117,7 @@ sitewise-ai-submission/
 git clone https://github.com/GarvKapoor/sitewise-ai-submission.git
 cd sitewise-ai-submission/03_APPLICATION
 python -m venv venv
-source venv/bin/activate  # On Windows: .venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
