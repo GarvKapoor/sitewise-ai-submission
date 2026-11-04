@@ -68,8 +68,10 @@ SiteWise AI utilizes a multi-stage hierarchical inference pipeline:
 ### 2. PAPNet (Pattern-Affinitive Propagation Network)
 - **Design:** A custom deep architecture engineered specifically for remote sensing Earth observation.
 - **Mechanism:** Integrates **Pattern Affinity Modules (PAM)** that compute non-local pairwise spatial affinity matrices:
+
   $$\text{Affinity}(Q, K) = \text{Softmax}\left(\frac{Q \cdot K^T}{\sqrt{d_k}}\right)$$
   Contextual features are aggregated across the entire spatial receptive field and combined with local representations using a learnable residual gating parameter ($\gamma$).
+  
 - **Advantage:** Overcomes the limitations of standard local convolutions by connecting disjoint spatial structures across a satellite tile (such as fragmented crop parcels, winding river channels, or discontinuous highway networks).
 - **Weights:** Optimized in `.keras`, `.onnx` (29 MB), and `.tflite` (28 MB) formats for sub-second, ultra-low memory execution (<120MB RAM).
 
@@ -85,12 +87,16 @@ sitewise-ai-submission/
 │   ├── 02_PAPNet/                 # Pattern-Affinitive Propagation Network (Garv)
 │   └── 03_UNet/                   # DeepGlobe terrain semantic segmentation (Aneesh)
 ├── 03_APPLICATION/                # Production full-stack deployment
-│   ├── Flask_Backend/             # Flask application & low-memory ONNX/TFLite model pool
-│   ├── Frontend/                  # HTML templates and static assets (CSS, JS, samples)
-│   └── Model_Selection/           # Multi-model architecture selector documentation
+│   ├── app.py                     # Unified Flask backend with multi-model inference pipeline
+│   ├── models/                    # Low-memory ONNX, TFLite, and Keras model pool
+│   ├── templates/                 # Frontend UI templates with interactive model selector
+│   ├── static/                    # Frontend styling (CSS), UI logic (JS), and test sample tiles
+│   ├── requirements.txt           # Lean deployment dependencies (Flask, gunicorn, onnxruntime)
+│   ├── Procfile & render.yaml     # Render.com cloud hosting configuration
+│   └── benchmark_ram.py           # Runtime memory (RAM) & latency profiling benchmark
 ├── 04_FINAL_PROJECT_REPORT/       # Complete technical project report (DOCX)
 ├── 05_IEEE_RESEARCH_ARTICLE/      # Formatted IEEE research paper & 30+ academic citations
-└── 06_PROJECT_LINKS/              # Project GitHub repository and demonstration links
+└── 06_PROJECT_LINKS/              # Project repository link (Links.txt)
 ```
 
 ---
