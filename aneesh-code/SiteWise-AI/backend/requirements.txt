@@ -1,0 +1,10 @@
+# SiteWise AI — backend requirements
+# Python 3.9+ recommended. TensorFlow wheels availability depends on your
+# Python version; the app degrades to labelled demonstration mode when TF
+# or model files are absent and never fabricates predictions.
+flask>=3.0
+flask-cors>=4.0
+numpy>=1.26
+pillow>=10.0
+scikit-learn>=1.4
+tensorflow>=2.16 ; python_version < "3.14"

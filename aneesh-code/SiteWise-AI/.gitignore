@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+*.local
+
+# Dev/test artefacts and logs
+*.log
+frontend/dev.log
+backend/server.log
+backend/test-sat.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Freebuff workspace marker
+.freebuff/
+
+# Never commit model binaries or secrets
+backend/models/*.keras
+backend/models/*.h5
+.env
+.dev.vars

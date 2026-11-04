@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-label="Stylised satellite image with U-Net segmentation overlay">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1730"/>
+      <stop offset="1" stop-color="#070d1a"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b98a3f"/>
+      <stop offset="1" stop-color="#8a6a30"/>
+    </linearGradient>
+    <linearGradient id="field2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7c9a3d"/>
+      <stop offset="1" stop-color="#5d7a2c"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b82c4"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#34d399" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0.9"/>
+    </linearGradient>
+    <clipPath id="frame">
+      <rect x="24" y="24" width="640" height="452" rx="14"/>
+    </clipPath>
+  </defs>
+
+  <rect width="960" height="640" fill="url(#sky)"/>
+
+  <!-- ============ Satellite scene (original image) ============ -->
+  <g clip-path="url(#frame)">
+    <rect x="24" y="24" width="640" height="452" fill="#274056"/>
+    <!-- crop fields -->
+    <polygon points="24,24 260,24 236,210 24,196" fill="url(#field)"/>
+    <polygon points="260,24 468,24 452,160 236,210" fill="url(#field2)"/>
+    <polygon points="24,196 236,210 214,410 24,388" fill="url(#field2)"/>
+    <polygon points="452,160 468,24 664,24 664,140" fill="url(#field)"/>
+    <!-- forest patch -->
+    <polygon points="24,388 214,410 196,476 24,476" fill="#1e6b3a"/>
+    <polygon points="214,410 402,428 380,476 196,476" fill="#17563a"/>
+    <!-- residential block -->
+    <g fill="#8d95a3">
+      <rect x="452" y="176" width="46" height="40"/>
+      <rect x="510" y="176" width="46" height="40"/>
+      <rect x="568" y="176" width="46" height="40"/>
+      <rect x="452" y="232" width="46" height="40"/>
+      <rect x="510" y="232" width="46" height="40"/>
+      <rect x="568" y="232" width="46" height="40"/>
+      <rect x="452" y="288" width="46" height="40"/>
+      <rect x="510" y="288" width="46" height="40"/>
+      <rect x="568" y="288" width="46" height="40"/>
+      <rect x="452" y="344" width="46" height="40"/>
+      <rect x="510" y="344" width="46" height="40"/>
+      <rect x="568" y="344" width="46" height="40"/>
+    </g>
+    <g fill="#6b7280">
+      <rect x="452" y="176" width="46" height="8"/>
+      <rect x="568" y="232" width="46" height="8"/>
+      <rect x="452" y="288" width="46" height="8"/>
+      <rect x="568" y="344" width="46" height="8"/>
+    </g>
+    <!-- highway -->
+    <path d="M 24 300 L 660 318" stroke="#4b5563" stroke-width="18"/>
+    <path d="M 24 300 L 660 318" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="14 12"/>
+    <!-- river -->
+    <path d="M 402 476 C 430 400 380 360 452 300 C 520 242 560 200 648 176 L 664 176 L 664 200 C 590 222 560 260 500 330 C 448 392 470 430 448 476 Z" fill="url(#water)"/>
+    <path d="M 402 476 C 430 400 380 360 452 300 C 520 242 560 200 648 176 L 664 176 L 664 200 C 590 222 560 260 500 330 C 448 392 470 430 448 476 Z" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- ============ Segmentation overlay card ============ -->
+  <g transform="translate(404 168)">
+    <rect x="0" y="0" width="512" height="360" rx="14" fill="#0a1122" fill-opacity="0.92" stroke="#34d399" stroke-opacity="0.35" stroke-width="1.5"/>
+    <text x="24" y="40" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="18" font-weight="700">U-Net segmentation overlay</text>
+    <text x="24" y="62" fill="#7c8db5" font-family="Inter, sans-serif" font-size="12">Pixel-wise land-cover prediction</text>
+
+    <!-- mini mask preview -->
+    <g transform="translate(24 84)">
+      <rect width="212" height="150" rx="8" fill="#274056"/>
+      <polygon points="0,0 86,0 78,70 0,60" fill="#eab308"/>
+      <polygon points="86,0 180,0 180,40 78,70" fill="#84cc16"/>
+      <polygon points="0,60 78,70 70,150 0,150" fill="#16a34a"/>
+      <rect x="180" y="0" width="32" height="150" fill="#ef4444" fill-opacity="0.85"/>
+      <path d="M 0 92 L 212 98" stroke="#64748b" stroke-width="8"/>
+      <path d="M 126 150 C 138 104 108 84 150 48 C 176 26 194 12 212 6 L 212 20 C 186 32 168 60 148 104 C 140 122 148 136 140 150 Z" fill="#0ea5e9"/>
+      <circle cx="212" cy="0" r="0" fill="#0ea5e9"/>
+      <path d="M 92 38 L 212 46" stroke="#0ea5e9" stroke-width="1" stroke-opacity="0.2"/>
+      <rect width="212" height="150" rx="8" fill="none" stroke="#22d3ee" stroke-opacity="0.4"/>
+    </g>
+
+    <!-- legend -->
+    <g transform="translate(24 262)" font-family="Inter, sans-serif" font-size="12.5">
+      <g transform="translate(0 0)">
+        <rect width="14" height="14" rx="3" fill="#16a34a"/><text x="22" y="11" fill="#cbd5e1">Forest</text>
+      </g>
+      <g transform="translate(84 0)">
+        <rect width="14" height="14" rx="3" fill="#eab308"/><text x="22" y="11" fill="#cbd5e1">Annual Crop</text>
+      </g>
+      <g transform="translate(186 0)">
+        <rect width="14" height="14" rx="3" fill="#0ea5e9"/><text x="22" y="11" fill="#cbd5e1">River</text>
+      </g>
+      <g transform="translate(0 26)">
+        <rect width="14" height="14" rx="3" fill="#ef4444"/><text x="22" y="11" fill="#cbd5e1">Residential</text>
+      </g>
+      <g transform="translate(104 26)">
+        <rect width="14" height="14" rx="3" fill="#64748b"/><text x="22" y="11" fill="#cbd5e1">Highway</text>
+      </g>
+    </g>
+
+    <!-- confidence chip -->
+    <g transform="translate(356 96)">
+      <rect width="132" height="52" rx="10" fill="#101d3a" stroke="#22d3ee" stroke-opacity="0.4"/>
+      <text x="14" y="22" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10.5">Segmentation confidence</text>
+      <text x="14" y="43" fill="#34d399" font-family="Inter, sans-serif" font-size="20" font-weight="700">96.2%</text>
+    </g>
+    <g transform="translate(356 164)">
+      <rect width="132" height="52" rx="10" fill="#101d3a" stroke="#34d399" stroke-opacity="0.4"/>
+      <text x="14" y="22" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10.5">Dominant class</text>
+      <text x="14" y="43" fill="#22d3ee" font-family="Inter, sans-serif" font-size="17" font-weight="700">Annual Crop</text>
+    </g>
+  </g>
+
+  <!-- frame border + scanline -->
+  <rect x="24" y="24" width="640" height="452" rx="14" fill="none" stroke="#22d3ee" stroke-opacity="0.35" stroke-width="1.5"/>
+  <line x1="24" y1="120" x2="664" y2="124" stroke="#22d3ee" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 8"/>
+  <line x1="24" y1="240" x2="664" y2="240" stroke="#22d3ee" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 8"/>
+  <line x1="24" y1="360" x2="664" y2="364" stroke="#22d3ee" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="4 8"/>
+
+  <!-- coordinates chip -->
+  <g transform="translate(40 392)">
+    <rect width="150" height="40" rx="10" fill="#0a1122" fill-opacity="0.8" stroke="#ffffff" stroke-opacity="0.12"/>
+    <text x="14" y="18" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10">SENTINEL-2 · RGB</text>
+    <text x="14" y="32" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="11" font-weight="600">10 land-cover classes</text>
+  </g>
+  <g transform="translate(204 392)">
+    <rect width="170" height="40" rx="10" fill="#0a1122" fill-opacity="0.8" stroke="#34d399" stroke-opacity="0.35"/>
+    <text x="14" y="18" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10">SCREENING ENGINE</text>
+    <text x="14" y="32" fill="#34d399" font-family="Inter, sans-serif" font-size="11" font-weight="600">8 suitability categories</text>
+  </g>
+
+  <!-- floating glass chip -->
+  <g class="anim-float" transform="translate(700 96)">
+    <rect width="228" height="64" rx="14" fill="#0d1730" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.14"/>
+    <circle cx="30" cy="32" r="10" fill="url(#glass)" fill-opacity="0.25" stroke="#34d399"/>
+    <text x="50" y="27" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10">ENCODER → BOTTLENECK</text>
+    <text x="50" y="43" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="12.5" font-weight="600">+ Decoder skip connections</text>
+  </g>
+  <g transform="translate(700 200)">
+    <rect width="228" height="64" rx="14" fill="#0d1730" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.14"/>
+    <circle cx="30" cy="32" r="10" fill="url(#glass)" fill-opacity="0.25" stroke="#22d3ee"/>
+    <text x="50" y="27" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10">RELIABILITY CNN</text>
+    <text x="50" y="43" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="12.5" font-weight="600">Clean / degraded check</text>
+  </g>
+  <g transform="translate(700 304)">
+    <rect width="228" height="64" rx="14" fill="#0d1730" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.14"/>
+    <circle cx="30" cy="32" r="10" fill="url(#glass)" fill-opacity="0.25" stroke="#a855f7" stroke-opacity="0.7"/>
+    <text x="50" y="27" fill="#7c8db5" font-family="Inter, sans-serif" font-size="10">SCREENING ENGINE</text>
+    <text x="50" y="43" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="12.5" font-weight="600">18-D feature scoring</text>
+  </g>
+  <g transform="translate(700 408)">
+    <rect width="228" height="88" rx="14" fill="#0d1730" fill-opacity="0.9" stroke="#f59e0b" stroke-opacity="0.4"/>
+    <text x="18" y="30" fill="#f59e0b" font-family="Inter, sans-serif" font-size="11" font-weight="700">PRELIMINARY SCREENING</text>
+    <text x="18" y="50" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="11">Not an approval or legal</text>
+    <text x="18" y="66" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="11">land-use decision.</text>
+  </g>
+</svg>
